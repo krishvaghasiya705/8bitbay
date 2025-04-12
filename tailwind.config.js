@@ -11,6 +11,12 @@ export default {
         darkBg: "#0f0f0f",
         cardGrey: "#2c2c2c",
       },
+      boxShadow: {
+        pixel: "4px 4px 0px 0px rgba(0, 0, 0, 1)",
+      },
+      animation: {
+        pulse: "pulse 2s infinite",
+      },
       fontFamily: {
         pixel: ["Pixelify Sans", "sans-serif"],
       },
