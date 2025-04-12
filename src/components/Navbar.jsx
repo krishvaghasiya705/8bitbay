@@ -1,20 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "../assets/icons/logo";
 
 const Navbar = () => {
   return (
     <nav className="bg-cardGrey p-4 flex justify-between items-center font-pixel text-neon shadow-lg border-b-2 border-pixelBlue">
       <Link
         to="/"
-        className="text-2xl hover:text-pixelYellow transition-all animate-pulse"
+        className="w-[150px] hover:text-pixelYellow transition-all animate-pulse"
       >
-        <span className="neon-text">8bitBay</span>
+        <Logo />
       </Link>
       <div className="space-x-4 text-sm">
-        <Link
-          to="/"
-          className="hover:text-pixelRed transition-all neon-hover"
-        >
+        <Link to="/" className="hover:text-pixelRed transition-all neon-hover">
           Home
         </Link>
         <Link
