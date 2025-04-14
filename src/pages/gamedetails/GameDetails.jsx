@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { fetchGameDetails } from "../../services/api";
+import { gsap } from "gsap";
 
 const GameDetails = () => {
   const { id } = useParams();
   const [game, setGame] = useState(null);
+
+  // Refs for animations
+  const containerRef = useRef(null);
+  const bannerRef = useRef(null);
+  const detailsRef = useRef(null);
 
   useEffect(() => {
     const loadGameDetails = async () => {
@@ -14,19 +20,52 @@ const GameDetails = () => {
     loadGameDetails();
   }, [id]);
 
+  useEffect(() => {
+    if (game) {
+      // GSAP animations
+      gsap.from(containerRef.current, {
+        opacity: 0,
+        y: 50,
+        duration: 1,
+        ease: "power3.out",
+      });
+
+      gsap.from(bannerRef.current, {
+        opacity: 0,
+        scale: 0.8,
+        duration: 1,
+        delay: 0.5,
+        ease: "power3.out",
+      });
+
+      gsap.from(detailsRef.current, {
+        opacity: 0,
+        x: -50,
+        duration: 1,
+        delay: 0.8,
+        ease: "power3.out",
+      });
+    }
+  }, [game]);
+
   if (!game) {
     return <div className="text-center text-white">Loading...</div>;
   }
 
   return (
-    <div className="p-6 bg-darkBg text-white font-pixel">
+    <div ref={containerRef} className="p-6 bg-darkBg text-white font-pixel">
       <div className="mb-6 grid grid-cols-[30%1fr] gap-4">
-        <img
-          src={game.banner_image}
-          alt={game.name}
-          className="w-full max-w-4xl object-cover rounded-lg shadow-pixel h-[500px]"
-        />
-        <div>
+        <div
+          ref={bannerRef}
+          className="max-w-4xl h-[500px] w-full rounded-2xl shadow-pixel overflow-hidden p-5"
+        >
+          <img
+            src={game.banner_image}
+            alt={game.name}
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div ref={detailsRef}>
           <h1 className="text-4xl font-bold mb-2">{game.name}</h1>
           <p className="text-lg text-gray-400">Version: {game.version}</p>
           <h2 className="text-2xl font-bold mb-2">Description</h2>
@@ -145,9 +184,9 @@ const GameDetails = () => {
           </ul>
         </div>
         <div className="mt-4">
-        {game.download_links.torrent && (
-          <h3 className="text-xl font-bold mb-2">Torrent</h3>
-        )}
+          {game.download_links.torrent && (
+            <h3 className="text-xl font-bold mb-2">Torrent</h3>
+          )}
           <ul className="list-disc list-inside pl-4">
             {game.download_links.torrent.map((link, index) => (
               <li key={index}>
