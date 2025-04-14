@@ -41,7 +41,7 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Includes</h2>
+        {game.includes && <h2 className="text-2xl font-bold mb-2">Includes</h2>}
         <ul className="list-disc list-inside pl-4">
           {game.includes.map((item, index) => (
             <li key={index}>{item}</li>
@@ -50,7 +50,7 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Tags</h2>
+        {game.tags && <h2 className="text-2xl font-bold mb-2">Tags</h2>}
         <div className="flex flex-wrap gap-2">
           {game.tags.map((tag, index) => (
             <span
@@ -64,12 +64,16 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Description</h2>
+        {game.game_details.no_return_mode && (
+          <h2 className="text-2xl font-bold mb-2">Description</h2>
+        )}
         <p className="leading-relaxed">{game.game_details.description}</p>
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">No Return Mode</h2>
+        {game.game_details.no_return_mode && (
+          <h2 className="text-2xl font-bold mb-2">No Return Mode</h2>
+        )}
         <p className="leading-relaxed">{game.game_details.no_return_mode}</p>
       </div>
 
@@ -83,7 +87,9 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Companies</h2>
+        {game.companies && (
+          <h2 className="text-2xl font-bold mb-2">Companies</h2>
+        )}
         <ul className="list-disc list-inside pl-4">
           {game.companies.map((company, index) => (
             <li key={index}>{company}</li>
@@ -106,12 +112,16 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Animated Preview</h2>
-        <img
-          src={game.imagevid}
-          alt="Animated Preview"
-          className="w-full mx-auto rounded-lg shadow-pixel"
-        />
+        {game.imagevid && (
+          <h2 className="text-2xl font-bold mb-2">Animated Preview</h2>
+        )}
+        {game.imagevid && (
+          <img
+            src={game.imagevid}
+            alt="Animated Preview"
+            className="w-full mx-auto rounded-lg shadow-pixel"
+          />
+        )}
       </div>
 
       <div className="mb-6">
@@ -135,7 +145,9 @@ const GameDetails = () => {
           </ul>
         </div>
         <div className="mt-4">
+        {game.download_links.torrent && (
           <h3 className="text-xl font-bold mb-2">Torrent</h3>
+        )}
           <ul className="list-disc list-inside pl-4">
             {game.download_links.torrent.map((link, index) => (
               <li key={index}>
@@ -155,7 +167,9 @@ const GameDetails = () => {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-2xl font-bold mb-2">Additional Features</h2>
+        {game.game_details.features && (
+          <h2 className="text-2xl font-bold mb-2">Additional Features</h2>
+        )}
         <ul className="list-disc list-inside pl-4">
           {game.game_details.features.map((feature, index) => (
             <li key={index}>{feature}</li>
