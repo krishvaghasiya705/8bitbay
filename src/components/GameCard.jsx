@@ -6,7 +6,7 @@ const GameCard = ({ game }) => {
     <Link to={`/gamedetails/${game.id}`}>
       <div className="bg-cardGrey hover:border-pixelYellow border-2 border-transparent transition-all duration-300 rounded-xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-pixel">
         <img
-          src={game.background_image}
+          src={game.banner_image}
           alt={game.name}
           className="w-full h-40 object-cover"
         />

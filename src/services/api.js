@@ -1,15 +1,18 @@
-const API_KEY = "14d26ac1f9db405eb11200fdfc9730aa";
-const BASE_URL = "https://api.rawg.io/api";
+const BIN_ID = "67fc99eb8960c979a584997d";
+const API_KEY = "$2a$10$geENos2etxSFaC9fGt2dX.vgNms2JS5eyjprJ2buoQW1XwBBFcoJO";
+const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}/latest`;
 
-export const fetchGames = async (search = "", page = 1) => {
-  const res = await fetch(
-    `${BASE_URL}/games?key=${API_KEY}&search=${search}&page=${page}&page_size=20`
-  );
+export const fetchGames = async () => {
+  const res = await fetch(API_URL, {
+    headers: {
+      "X-Master-Key": API_KEY,
+    },
+  });
   const data = await res.json();
-  return data.results;
+  return data.record; // Assuming the games array is stored in `record`
 };
 
 export const fetchGameDetails = async (id) => {
-  const res = await fetch(`${BASE_URL}/games/${id}?key=${API_KEY}`);
-  return await res.json();
+  const games = await fetchGames();
+  return games.find((game) => game.id === id);
 };

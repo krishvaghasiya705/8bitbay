@@ -5,6 +5,8 @@ import Header from "./common/header";
 import Footer from "./common/footer";
 import GameDetails from "./pages/gamedetails/GameDetails";
 import Navbar from "./components/Navbar";
+import AboutPage from "./pages/about/about";
+import Admin from "./pages/admin/admin";
 
 const App = () => {
   return (
@@ -15,6 +17,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/gamedetails/:id" element={<GameDetails />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </main>
       <Footer />

@@ -41,16 +41,48 @@ p {
   padding: 0 20px;
 }
 
-/* Add a starry background */
-.bg-stars {
-  background-image: url("/path-to-your-stars-image.jpg");
-}
-
-/* Add this to your global CSS file */
 .neon-text {
   text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff, 0 0 20px #ff00ff;
 }
 
 .neon-hover:hover {
   text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff;
+}
+
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-2px, -2px);
+  }
+  20% {
+    transform: translate(2px, 2px);
+  }
+  30% {
+    transform: translate(-2px, -2px);
+  }
+  40% {
+    transform: translate(2px, 2px);
+  }
+  50% {
+    transform: translate(0);
+  }
+}
+
+.animate-glitch {
+  animation: glitch 1s infinite;
+}
+
+@keyframes spin-slow {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
 }
