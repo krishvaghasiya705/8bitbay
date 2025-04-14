@@ -11,7 +11,7 @@ const FilterBar = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex items-center justify-center space-x-4 mb-8 font-pixel">
+    <div className="flex items-center justify-center space-x-4 font-pixel">
       <div className="relative">
         <input
           type="text"
