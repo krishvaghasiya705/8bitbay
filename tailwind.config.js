@@ -16,6 +16,9 @@ export default {
       },
       animation: {
         pulse: "pulse 2s infinite",
+        spin: "spin 1s linear infinite",
+        "spin-slow": "spin 3s linear infinite",
+        "spin-reverse": "spin-reverse 3s linear infinite",
       },
       fontFamily: {
         pixel: ["Pixelify Sans", "sans-serif"],
@@ -24,6 +27,10 @@ export default {
         pulse: {
           "0%, 100%": { transform: "scale(1)" },
           "50%": { transform: "scale(1.1)" },
+        },
+        "spin-reverse": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(-360deg)" },
         },
       },
     },

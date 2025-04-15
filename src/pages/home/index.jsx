@@ -3,6 +3,8 @@ import GameCard from "../../components/GameCard";
 import { getAllGames } from "../../api/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Loader from "../../components/loader/loader";
+import Loadertwo from "../../components/loadertwo/loadertwo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -16,9 +18,9 @@ const Home = ({ searchQuery }) => {
   useEffect(() => {
     const loadGames = async () => {
       try {
-        const data = await getAllGames(); // Use API function
+        const data = await getAllGames();
         setGames(data);
-        setFilteredGames(data); // Initially show all games
+        setFilteredGames(data);
       } catch (err) {
         setError("Failed to load games. Please try again later.");
       } finally {
@@ -35,7 +37,7 @@ const Home = ({ searchQuery }) => {
       );
       setFilteredGames(filtered);
     } else {
-      setFilteredGames(games); // Reset to all games if no query
+      setFilteredGames(games);
     }
   }, [searchQuery, games]);
 
@@ -62,25 +64,25 @@ const Home = ({ searchQuery }) => {
   }, [filteredGames]);
 
   if (loading) {
-    return <div className="text-center text-white">Loading games...</div>;
+    return <Loader />;
   }
 
   if (error) {
-    return <div className="text-center text-red-500">{error}</div>;
+    return <Loadertwo />;
   }
 
   return (
-    <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
-      <div
-        className="grid grid-cols-2 md:grid-cols-4 gap-6"
-        ref={gameCardsRef}
-      >
-        {Array.isArray(filteredGames) &&
-          filteredGames.map((game) => (
-            <GameCard key={game.id} game={game} />
-          ))}
+    <>
+      <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
+        <div
+          className="grid grid-cols-2 md:grid-cols-4 gap-6"
+          ref={gameCardsRef}
+        >
+          {Array.isArray(filteredGames) &&
+            filteredGames.map((game) => <GameCard key={game.id} game={game} />)}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

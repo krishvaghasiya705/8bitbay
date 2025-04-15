@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { getAllGames } from "../../api/api"; // Updated import
 import { gsap } from "gsap";
+import Loader from "../../components/loader/loader";
 
 const GameDetails = () => {
   const { id } = useParams();
@@ -54,7 +55,7 @@ const GameDetails = () => {
   }, [game]);
 
   if (!game) {
-    return <div className="text-center text-white">Loading...</div>;
+    return <Loader />;
   }
 
   return (
