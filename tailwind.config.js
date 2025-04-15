@@ -20,6 +20,12 @@ export default {
       fontFamily: {
         pixel: ["Pixelify Sans", "sans-serif"],
       },
+      keyframes: {
+        pulse: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.1)" },
+        },
+      },
     },
   },
   plugins: [],
