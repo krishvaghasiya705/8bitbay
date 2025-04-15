@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import GameCard from "../../components/GameCard";
-import { fetchGames } from "../../services/api";
+import { getAllGames } from "../../api/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -16,7 +16,7 @@ const Home = ({ searchQuery }) => {
   useEffect(() => {
     const loadGames = async () => {
       try {
-        const data = await fetchGames();
+        const data = await getAllGames(); // Use API function
         setGames(data);
         setFilteredGames(data); // Initially show all games
       } catch (err) {

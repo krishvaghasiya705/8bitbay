@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { fetchGameDetails } from "../../services/api";
+import { getAllGames } from "../../api/api"; // Updated import
 import { gsap } from "gsap";
 
 const GameDetails = () => {
@@ -14,8 +14,13 @@ const GameDetails = () => {
 
   useEffect(() => {
     const loadGameDetails = async () => {
-      const data = await fetchGameDetails(id);
-      setGame(data);
+      try {
+        const games = await getAllGames(); // Fetch all games
+        const gameData = games.find((g) => g.id === id); // Find the specific game
+        setGame(gameData);
+      } catch (err) {
+        console.error("Failed to fetch game details:", err);
+      }
     };
     loadGameDetails();
   }, [id]);

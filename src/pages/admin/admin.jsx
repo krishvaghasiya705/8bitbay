@@ -1,10 +1,7 @@
 import React, { useState } from "react";
-import { fetchGames, fetchGameDetails } from "../../services/api";
+import { addGame, updateGame, getAllGames } from "../../api/api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-const PUT_URL = "https://api.jsonbin.io/v3/b/67fc99eb8960c979a584997d";
-const API_KEY = "$2a$10$geENos2etxSFaC9fGt2dX.vgNms2JS5eyjprJ2buoQW1XwBBFcoJO";
 
 const Admin = () => {
   const defaultGame = {
@@ -67,57 +64,33 @@ const Admin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const existingGames = await fetchGames();
-      let updatedGames;
-
       if (isEditMode) {
-        const gameExists = existingGames.find((g) => g.id === game.id);
-        if (!gameExists) {
-          toast.error("Game ID not found. Please check and try again.");
-          return;
-        }
-        updatedGames = existingGames.map((g) => (g.id === game.id ? game : g));
+        await updateGame(game.id, game); // Use API function
       } else {
-        const duplicate = existingGames.find((g) => g.id === game.id);
-        if (duplicate) {
-          toast.error("Game with this ID already exists!");
-          return;
-        }
-        updatedGames = [...existingGames, game];
+        await addGame(game); // Use API function
       }
-
-      const res = await fetch(PUT_URL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Master-Key": API_KEY,
-          "X-Access-Key": "krish",
-        },
-        body: JSON.stringify({ record: updatedGames }),
-      });
-
-      if (res.ok) {
-        toast.success(`Game ${isEditMode ? "updated" : "added"} successfully!`);
-        resetForm();
-      } else {
-        const errorData = await res.json();
-        console.error("Error:", errorData);
-        toast.error("Something went wrong. Please try again.");
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-      toast.error("Network error. Please try again.");
+      toast.success("Game saved successfully!");
+      resetForm();
+    } catch (err) {
+      console.error("Failed to save game:", err);
+      toast.error("Failed to save game. Please try again.");
     }
   };
 
   const handleSearch = async () => {
-    const gameDetails = await fetchGameDetails(searchQuery);
-    if (gameDetails) {
-      setGame(gameDetails);
-      setIsEditMode(true);
-      toast.info("Game loaded for editing.");
-    } else {
-      toast.error("Game not found!");
+    try {
+      const games = await getAllGames(); // Use API function
+      const foundGame = games.find((g) => g.id === searchQuery);
+      if (foundGame) {
+        setGame(foundGame);
+        setIsEditMode(true);
+        toast.info("Game loaded for editing.");
+      } else {
+        toast.error("Game not found!");
+      }
+    } catch (err) {
+      console.error("Failed to search game:", err);
+      toast.error("Failed to search game. Please try again.");
     }
   };
 
