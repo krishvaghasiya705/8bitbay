@@ -4,7 +4,6 @@ import { getAllGames } from "../../api/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Loader from "../../components/loader/loader";
-import Loadertwo from "../../components/loadertwo/loadertwo";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,17 +11,17 @@ const Home = ({ searchQuery }) => {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const gameCardsRef = useRef(null);
 
   useEffect(() => {
     const loadGames = async () => {
       try {
         const data = await getAllGames();
+        console.log("Games loaded:", data); // Verify the structure here
         setGames(data);
         setFilteredGames(data);
       } catch (err) {
-        setError("Failed to load games. Please try again later.");
+        console.error("Failed to load games:", err);
       } finally {
         setLoading(false);
       }
@@ -67,22 +66,17 @@ const Home = ({ searchQuery }) => {
     return <Loader />;
   }
 
-  if (error) {
-    return <Loadertwo />;
-  }
-
   return (
-    <>
-      <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
-        <div
-          className="grid grid-cols-2 md:grid-cols-4 gap-6"
-          ref={gameCardsRef}
-        >
-          {Array.isArray(filteredGames) &&
-            filteredGames.map((game) => <GameCard key={game.id} game={game} />)}
-        </div>
+    <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
+      <div
+        className="grid grid-cols-2 md:grid-cols-4 gap-6"
+        ref={gameCardsRef}
+      >
+        {filteredGames.map((game) => (
+          <GameCard key={game.id} game={game} />
+        ))}
       </div>
-    </>
+    </div>
   );
 };
 

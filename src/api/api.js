@@ -1,34 +1,13 @@
-import axios from "axios";
+const GAMES_DATA_URL =
+  "https://raw.githubusercontent.com/krishvaghasiya705/8bitbay-api/main/data/games.json";
 
-const API_BASE_URL = "https://eightbitbay-api.onrender.com/api";
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000, // 10s timeout
-});
-
-// === Game APIs ===
-
-// GET all games
 export const getAllGames = async () => {
-  const response = await api.get("/games");
-  return response.data;
-};
-
-// POST new game
-export const addGame = async (newGame) => {
-  const response = await api.post("/games", newGame);
-  return response.data;
-};
-
-// UPDATE a game
-export const updateGame = async (id, updatedGame) => {
-  const response = await api.put(`/games/${id}`, updatedGame);
-  return response.data;
-};
-
-// DELETE a game
-export const deleteGame = async (id) => {
-  const response = await api.delete(`/games/${id}`);
-  return response.data;
+  console.log("Fetching games...");
+  const response = await fetch(GAMES_DATA_URL);
+  if (!response.ok) {
+    throw new Error("Failed to fetch games data.");
+  }
+  const data = await response.json();
+  console.log("Fetched games:", data);
+  return Array.isArray(data.record) ? data.record : [];
 };

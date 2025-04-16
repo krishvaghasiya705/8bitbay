@@ -50,7 +50,8 @@ const App = () => {
       <main>
         <Routes>
           <Route path="/" element={<Home searchQuery={searchQuery} />} />
-          <Route path="/gamedetails/:id/:name" element={<GameDetails />} />
+          {/* <Route path="/gamedetails/:id/:name" element={<GameDetails />} /> */}
+          <Route path="/gamedetails/:id" element={<GameDetails />} />
           <Route path="/about" element={<AboutPage />} />
           <Route
             path="/admin"

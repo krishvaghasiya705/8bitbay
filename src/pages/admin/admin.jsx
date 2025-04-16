@@ -1,292 +1,556 @@
 import React, { useState } from "react";
-import { addGame, updateGame, getAllGames } from "../../api/api";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { FaCopy } from "react-icons/fa";
 
 const Admin = () => {
-  const defaultGame = {
+  const [formData, setFormData] = useState({
     banner_image: "",
-    companies: [],
+    companies: [""],
     download_links: {
-      direct_links: [],
-      torrent: [],
+      direct_links: [{ link: "", link_name: "", text: "" }],
+      torrent: [{ link: "", link_name: "", text: "" }],
     },
     game_details: {
       description: "",
-      features: [],
+      features: [""],
       no_return_mode: "",
     },
     id: "",
     imagevid: "",
-    images: [],
-    includes: [],
+    images: [""],
+    includes: [""],
     language: "",
     name: "",
     original_size: "",
     repack_details: {
-      features: [],
+      features: [""],
       title: "",
     },
     repack_size: "",
-    tags: [],
+    tags: [""],
     version: "",
-  };
+  });
 
-  const [game, setGame] = useState(defaultGame);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [previewJSON, setPreviewJSON] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setGame((prev) => ({ ...prev, [name]: value }));
-  };
+  const handleChange = (e, path) => {
+    const keys = path.split(".");
+    const updatedFormData = { ...formData };
+    let current = updatedFormData;
 
-  const handleArrayChange = (e, field) => {
-    const { value } = e.target;
-    setGame((prev) => ({ ...prev, [field]: value.split(",") }));
-  };
-
-  const handleNestedArrayChange = (e, section, field) => {
-    try {
-      const value = JSON.parse(e.target.value);
-      setGame((prev) => ({
-        ...prev,
-        [section]: {
-          ...prev[section],
-          [field]: value,
-        },
-      }));
-    } catch {
-      toast.error("Please enter valid JSON array.");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (isEditMode) {
-        await updateGame(game.id, game); // Use API function
+    keys.forEach((key, index) => {
+      if (index === keys.length - 1) {
+        current[key] = e.target.value;
       } else {
-        await addGame(game); // Use API function
+        current = current[key];
       }
-      toast.success("Game saved successfully!");
-      resetForm();
-    } catch (err) {
-      console.error("Failed to save game:", err);
-      toast.error("Failed to save game. Please try again.");
-    }
+    });
+
+    setFormData(updatedFormData);
   };
 
-  const handleSearch = async () => {
-    try {
-      const games = await getAllGames(); // Use API function
-      const foundGame = games.find((g) => g.id === searchQuery);
-      if (foundGame) {
-        setGame(foundGame);
-        setIsEditMode(true);
-        toast.info("Game loaded for editing.");
+  const handleArrayChange = (e, path, index) => {
+    const keys = path.split(".");
+    const updatedFormData = { ...formData };
+    let current = updatedFormData;
+
+    // Traverse the path to the correct array or object
+    keys.forEach((key, idx) => {
+      if (idx === keys.length - 1) {
+        // Ensure the array exists at the index
+        if (!current[index]) {
+          current[index] = {}; // Initialize the object if it doesn't exist
+        }
+        current[index][key] = e.target.value; // Update the specific field
       } else {
-        toast.error("Game not found!");
+        if (!current[key]) {
+          current[key] = Array.isArray(current) ? [] : {}; // Create an object or array if it doesn't exist
+        }
+        current = current[key];
       }
-    } catch (err) {
-      console.error("Failed to search game:", err);
-      toast.error("Failed to search game. Please try again.");
-    }
+    });
+
+    setFormData(updatedFormData);
   };
 
-  const resetForm = () => {
-    setGame(defaultGame);
-    setIsEditMode(false);
-    setSearchQuery("");
+  const handleAddField = (path) => {
+    const keys = path.split(".");
+    const updatedFormData = { ...formData };
+    let current = updatedFormData;
+
+    keys.forEach((key, idx) => {
+      if (idx === keys.length - 1) {
+        current[key].push("");
+      } else {
+        current = current[key];
+      }
+    });
+
+    setFormData(updatedFormData);
+  };
+
+  const handleRemoveField = (path, index) => {
+    const keys = path.split(".");
+    const updatedFormData = { ...formData };
+    let current = updatedFormData;
+
+    keys.forEach((key, idx) => {
+      if (idx === keys.length - 1) {
+        current[key] = current[key].filter((_, i) => i !== index); // Remove the item
+      } else {
+        current = current[key];
+      }
+    });
+
+    setFormData(updatedFormData);
+  };
+
+  const handleSubmit = () => {
+    setPreviewJSON(JSON.stringify(formData, null, 2));
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(previewJSON);
+    alert("JSON copied to clipboard!");
   };
 
   return (
-    <div className="p-6 bg-darkBg text-white min-h-screen">
-      <ToastContainer />
-      <h1 className="text-3xl font-pixel text-neon mb-6 text-center">
-        Admin Panel
+    <div className="p-6 bg-gray-900 min-h-screen text-white font-mono">
+      <h1 className="text-4xl font-bold text-center text-neon-blue mb-6">
+        🎮 Admin Panel - Gaming Style 🎮
       </h1>
-
-      <div className="flex justify-center gap-4 mb-6">
-        <button onClick={resetForm} className="bg-pixelBlue px-4 py-2 rounded">
-          Add Game
-        </button>
-        <button
-          onClick={() => setIsEditMode(true)}
-          className="bg-pixelRed px-4 py-2 rounded"
-        >
-          Edit Game
-        </button>
-      </div>
-
-      {isEditMode && (
-        <div className="mb-6">
+      <div className="space-y-8">
+        {/* Banner Image */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-green">
+            Banner Image
+          </h2>
           <input
             type="text"
-            placeholder="Search by ID"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 rounded bg-cardGrey text-white"
+            value={formData.banner_image}
+            onChange={(e) => handleChange(e, "banner_image")}
+            className="w-full p-2 mt-2 bg-gray-700 text-white border border-neon-green rounded"
+            placeholder="Enter banner image URL"
           />
-          <button
-            onClick={handleSearch}
-            className="mt-2 bg-neon px-4 py-2 rounded"
-          >
-            Search
-          </button>
         </div>
-      )}
 
-      <form onSubmit={handleSubmit} className="bg-cardGrey p-6 rounded">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            "banner_image",
-            "id",
-            "imagevid",
-            "language",
-            "name",
-            "original_size",
-            "repack_size",
-            "version",
-          ].map((field) => (
-            <div key={field}>
-              <label>{field.replace("_", " ").toUpperCase()}</label>
+        {/* Companies */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-yellow">Companies</h2>
+          {formData.companies.map((company, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-2">
               <input
                 type="text"
-                name={field}
-                value={game[field]}
-                onChange={handleChange}
-                className="p-2 w-full rounded bg-darkBg text-white"
+                value={company}
+                onChange={(e) => handleArrayChange(e, "companies", index)}
+                className="w-full p-2 bg-gray-700 text-white border border-neon-yellow rounded"
+                placeholder="Enter company details"
               />
-            </div>
-          ))}
-
-          {["companies", "images", "includes", "tags"].map((field) => (
-            <div key={field}>
-              <label>{field.toUpperCase()} (comma separated)</label>
-              <textarea
-                value={game[field].join(",")}
-                onChange={(e) => handleArrayChange(e, field)}
-                className="p-2 w-full rounded bg-darkBg text-white"
-              />
+              <button
+                type="button"
+                onClick={() => handleAddField("companies")}
+                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+              >
+                Add
+              </button>
             </div>
           ))}
         </div>
 
-        <div className="mt-4">
-          <label>Repack Details Title</label>
+        {/* Download Links */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-blue">Direct Links</h2>
+          {formData.download_links.direct_links.map((link, index) => (
+            <div key={index} className="space-y-2 mt-2">
+              <input
+                type="text"
+                placeholder="Link"
+                value={link.link}
+                onChange={(e) =>
+                  handleArrayChange(
+                    e,
+                    `download_links.direct_links.${index}.link`,
+                    index
+                  )
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <input
+                type="text"
+                placeholder="Link Name"
+                value={link.link_name}
+                onChange={(e) =>
+                  handleArrayChange(
+                    e,
+                    "download_links.direct_links.link_name",
+                    index
+                  )
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <input
+                type="text"
+                placeholder="Text"
+                value={link.text}
+                onChange={(e) =>
+                  handleArrayChange(
+                    e,
+                    "download_links.direct_links.text",
+                    index
+                  )
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() => handleAddField("download_links.direct_links")}
+                  className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleRemoveField("download_links.direct_links", index)
+                  }
+                  className="bg-neon-gray text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-gray-dark transition duration-200"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Torrent Links */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-blue">
+            Torrent Links
+          </h2>
+          {formData.download_links.torrent.map((link, index) => (
+            <div key={index} className="space-y-2 mt-2">
+              <input
+                type="text"
+                placeholder="Link"
+                value={link.link}
+                onChange={(e) =>
+                  handleArrayChange(
+                    e,
+                    `download_links.torrent.${index}.link`,
+                    index
+                  )
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <input
+                type="text"
+                placeholder="Link Name"
+                value={link.link_name}
+                onChange={(e) =>
+                  handleArrayChange(
+                    e,
+                    "download_links.torrent.link_name",
+                    index
+                  )
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <input
+                type="text"
+                placeholder="Text"
+                value={link.text}
+                onChange={(e) =>
+                  handleArrayChange(e, "download_links.torrent.text", index)
+                }
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+              />
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() => handleAddField("download_links.torrent")}
+                  className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+                >
+                  Add
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleRemoveField("download_links.torrent", index)
+                  }
+                  className="bg-neon-gray text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-gray-dark transition duration-200"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Game Details */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-red">Game Details</h2>
+          <div>
+            <label className="block text-neon-red">Description</label>
+            <textarea
+              value={formData.game_details.description}
+              onChange={(e) => handleChange(e, "game_details.description")}
+              className="w-full p-2 bg-gray-700 text-white border border-neon-red rounded mt-2"
+              placeholder="Enter game description"
+            />
+          </div>
+          {/* Game Details - Features */}
+          <div className="mt-4">
+            <label className="block text-neon-red">Features</label>
+            <textarea
+              value={formData.game_details.features.join("\n")}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  game_details: {
+                    ...formData.game_details,
+                    features: e.target.value.split("\n"),
+                  },
+                })
+              }
+              className="w-full p-3 bg-gray-800 text-white border border-neon-red rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-red transition duration-200"
+              placeholder="Enter features (one per line)"
+              rows="5"
+            />
+          </div>
+        </div>
+
+        {/* Game Details - No Return Mode */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-red">
+            No Return Mode
+          </h2>
           <input
             type="text"
-            value={game.repack_details.title}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                repack_details: {
-                  ...prev.repack_details,
-                  title: e.target.value,
-                },
-              }))
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+            value={formData.game_details.no_return_mode}
+            onChange={(e) => handleChange(e, "game_details.no_return_mode")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-red rounded mt-2"
+            placeholder="Enter no return mode"
           />
         </div>
 
-        <div className="mt-4">
-          <label>Repack Features (newline-separated)</label>
-          <textarea
-            value={game.repack_details.features.join("\n")}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                repack_details: {
-                  ...prev.repack_details,
-                  features: e.target.value.split("\n"),
-                },
-              }))
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Repack Details */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-purple">
+            Repack Details
+          </h2>
+          <div>
+            <label className="block text-neon-purple">Title</label>
+            <input
+              type="text"
+              value={formData.repack_details.title}
+              onChange={(e) => handleChange(e, "repack_details.title")}
+              className="w-full p-2 bg-gray-700 text-white border border-neon-purple rounded mt-2"
+              placeholder="Enter repack title"
+            />
+          </div>
+          <div className="mt-4">
+            <label className="block text-neon-purple">Features</label>
+            <textarea
+              value={formData.repack_details.features.join("\n")}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  repack_details: {
+                    ...formData.repack_details,
+                    features: e.target.value.split("\n"),
+                  },
+                })
+              }
+              className="w-full p-3 bg-gray-800 text-white border border-neon-purple rounded-lg focus:outline-none focus:ring-2 focus:ring-neon-purple transition duration-200"
+              placeholder="Enter features (one per line)"
+              rows="5"
+            />
+          </div>
+        </div>
+
+        {/* ID */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-yellow">ID</h2>
+          <input
+            type="text"
+            value={formData.id}
+            onChange={(e) => handleChange(e, "id")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-yellow rounded mt-2"
+            placeholder="Enter ID"
           />
         </div>
 
-        <div className="mt-4">
-          <label>Game Description</label>
-          <textarea
-            value={game.game_details.description}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                game_details: {
-                  ...prev.game_details,
-                  description: e.target.value,
-                },
-              }))
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Image/Video */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-green">Image/Video</h2>
+          <input
+            type="text"
+            value={formData.imagevid}
+            onChange={(e) => handleChange(e, "imagevid")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-green rounded mt-2"
+            placeholder="Enter image/video URL"
           />
         </div>
 
-        <div className="mt-4">
-          <label>No Return Mode</label>
-          <textarea
-            value={game.game_details.no_return_mode}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                game_details: {
-                  ...prev.game_details,
-                  no_return_mode: e.target.value,
-                },
-              }))
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Images */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-blue">Images</h2>
+          {formData.images.map((image, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-2">
+              <input
+                type="text"
+                value={image}
+                onChange={(e) => handleArrayChange(e, "images", index)}
+                className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
+                placeholder="Enter image URL"
+              />
+              <button
+                type="button"
+                onClick={() => handleAddField("images")}
+                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+              >
+                Add
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Includes */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-orange">Includes</h2>
+          {formData.includes.map((include, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-2">
+              <input
+                type="text"
+                value={include}
+                onChange={(e) => handleArrayChange(e, "includes", index)}
+                className="w-full p-2 bg-gray-700 text-white border border-neon-orange rounded"
+                placeholder="Enter include details"
+              />
+              <button
+                type="button"
+                onClick={() => handleAddField("includes")}
+                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+              >
+                Add
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Language */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-pink">Language</h2>
+          <input
+            type="text"
+            value={formData.language}
+            onChange={(e) => handleChange(e, "language")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-pink rounded mt-2"
+            placeholder="Enter language"
           />
         </div>
 
-        <div className="mt-4">
-          <label>Game Features (newline-separated)</label>
-          <textarea
-            value={game.game_details.features.join("\n")}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                game_details: {
-                  ...prev.game_details,
-                  features: e.target.value.split("\n"),
-                },
-              }))
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Name */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-cyan">Name</h2>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => handleChange(e, "name")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-cyan rounded mt-2"
+            placeholder="Enter name"
           />
         </div>
 
-        <div className="mt-4">
-          <label>Direct Links (JSON Array)</label>
-          <textarea
-            value={JSON.stringify(game.download_links.direct_links, null, 2)}
-            onChange={(e) =>
-              handleNestedArrayChange(e, "download_links", "direct_links")
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Original Size */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-lime">
+            Original Size
+          </h2>
+          <input
+            type="text"
+            value={formData.original_size}
+            onChange={(e) => handleChange(e, "original_size")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-lime rounded mt-2"
+            placeholder="Enter original size"
           />
         </div>
 
-        <div className="mt-4">
-          <label>Download Torrent (JSON Array)</label>
-          <textarea
-            value={JSON.stringify(game.download_links.torrent, null, 2)}
-            onChange={(e) =>
-              handleNestedArrayChange(e, "download_links", "torrent")
-            }
-            className="w-full p-2 rounded bg-darkBg text-white"
+        {/* Repack Size */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-teal">Repack Size</h2>
+          <input
+            type="text"
+            value={formData.repack_size}
+            onChange={(e) => handleChange(e, "repack_size")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-teal rounded mt-2"
+            placeholder="Enter repack size"
           />
         </div>
 
-        <div className="mt-6">
-          <button type="submit" className="bg-neon px-6 py-3 rounded">
+        {/* Tags */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-indigo">Tags</h2>
+          {formData.tags.map((tag, index) => (
+            <div key={index} className="flex items-center space-x-2 mt-2">
+              <input
+                type="text"
+                value={tag}
+                onChange={(e) => handleArrayChange(e, "tags", index)}
+                className="w-full p-2 bg-gray-700 text-white border border-neon-indigo rounded"
+                placeholder="Enter tag"
+              />
+              <button
+                type="button"
+                onClick={() => handleAddField("tags")}
+                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+              >
+                Add
+              </button>
+            </div>
+          ))}
+        </div>
+
+        {/* Version */}
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold text-neon-gold">Version</h2>
+          <input
+            type="text"
+            value={formData.version}
+            onChange={(e) => handleChange(e, "version")}
+            className="w-full p-2 bg-gray-700 text-white border border-neon-gold rounded mt-2"
+            placeholder="Enter version"
+          />
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
+          <button
+            onClick={handleSubmit}
+            className="bg-white text-black px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
+          >
             Submit
           </button>
         </div>
-      </form>
+
+        {/* JSON Preview */}
+        {previewJSON && (
+          <div className="bg-gray-800 p-4 rounded-lg shadow-md mt-8">
+            <h2 className="text-xl font-semibold text-neon-green">
+              Preview JSON
+            </h2>
+            <pre className="bg-gray-700 p-4 rounded text-white overflow-auto">
+              {previewJSON}
+            </pre>
+            <button
+              onClick={handleCopy}
+              className="flex items-center bg-neon-blue text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-blue-dark transition duration-200 mt-4"
+            >
+              <FaCopy className="mr-2" /> Copy JSON
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
