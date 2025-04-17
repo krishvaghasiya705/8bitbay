@@ -75,7 +75,7 @@ const GameDetails = () => {
           <h1 className="text-4xl font-bold mb-2">{game.name}</h1>
           <p className="text-lg text-gray-400">Version: {game.version}</p>
           <h2 className="text-2xl font-bold mb-2">Description</h2>
-          <p className="leading-relaxed">{game.game_details.description}</p>
+          <p className="leading-relaxed line-clamp-6">{game.game_details.description}</p>
           <h2 className="text-2xl font-bold mb-2">Companies</h2>
           <ul className="list-disc list-inside pl-4">
             {game.companies.map((company, index) => (
