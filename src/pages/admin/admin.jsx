@@ -49,26 +49,31 @@ const Admin = () => {
   };
 
   const handleArrayChange = (e, path, index) => {
-    const keys = path.split(".");
     const updatedFormData = { ...formData };
+    const keys = path.split(".");
     let current = updatedFormData;
 
-    // Traverse the path to the correct array or object
     keys.forEach((key, idx) => {
       if (idx === keys.length - 1) {
-        // Ensure the array exists at the index
-        if (!current[index]) {
-          current[index] = {}; // Initialize the object if it doesn't exist
-        }
-        current[index][key] = e.target.value; // Update the specific field
+        current[key][index] = e.target.value;
       } else {
-        if (!current[key]) {
-          current[key] = Array.isArray(current) ? [] : {}; // Create an object or array if it doesn't exist
-        }
         current = current[key];
       }
     });
 
+    setFormData(updatedFormData);
+  };
+
+  const handleNestedArrayChange = (e, path, index, field) => {
+    const updatedFormData = { ...formData };
+    const keys = path.split(".");
+    let current = updatedFormData;
+
+    keys.forEach((key) => {
+      current = current[key];
+    });
+
+    current[index][field] = e.target.value;
     setFormData(updatedFormData);
   };
 
@@ -166,10 +171,11 @@ const Admin = () => {
                 placeholder="Link"
                 value={link.link}
                 onChange={(e) =>
-                  handleArrayChange(
+                  handleNestedArrayChange(
                     e,
-                    `download_links.direct_links.${index}.link`,
-                    index
+                    "download_links.direct_links",
+                    index,
+                    "link"
                   )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
@@ -179,10 +185,11 @@ const Admin = () => {
                 placeholder="Link Name"
                 value={link.link_name}
                 onChange={(e) =>
-                  handleArrayChange(
+                  handleNestedArrayChange(
                     e,
-                    "download_links.direct_links.link_name",
-                    index
+                    "download_links.direct_links",
+                    index,
+                    "link_name"
                   )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
@@ -192,10 +199,11 @@ const Admin = () => {
                 placeholder="Text"
                 value={link.text}
                 onChange={(e) =>
-                  handleArrayChange(
+                  handleNestedArrayChange(
                     e,
-                    "download_links.direct_links.text",
-                    index
+                    "download_links.direct_links",
+                    index,
+                    "text"
                   )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
@@ -234,10 +242,11 @@ const Admin = () => {
                 placeholder="Link"
                 value={link.link}
                 onChange={(e) =>
-                  handleArrayChange(
+                  handleNestedArrayChange(
                     e,
-                    `download_links.torrent.${index}.link`,
-                    index
+                    "download_links.torrent",
+                    index,
+                    "link"
                   )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
@@ -247,10 +256,11 @@ const Admin = () => {
                 placeholder="Link Name"
                 value={link.link_name}
                 onChange={(e) =>
-                  handleArrayChange(
+                  handleNestedArrayChange(
                     e,
-                    "download_links.torrent.link_name",
-                    index
+                    "download_links.torrent",
+                    index,
+                    "link_name"
                   )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
@@ -260,7 +270,12 @@ const Admin = () => {
                 placeholder="Text"
                 value={link.text}
                 onChange={(e) =>
-                  handleArrayChange(e, "download_links.torrent.text", index)
+                  handleNestedArrayChange(
+                    e,
+                    "download_links.torrent",
+                    index,
+                    "text"
+                  )
                 }
                 className="w-full p-2 bg-gray-700 text-white border border-neon-blue rounded"
               />
