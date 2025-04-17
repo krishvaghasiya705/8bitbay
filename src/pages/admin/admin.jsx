@@ -64,19 +64,24 @@ const Admin = () => {
     setFormData(updatedFormData);
   };
 
+  // Fix for handleNestedArrayChange
   const handleNestedArrayChange = (e, path, index, field) => {
-    const updatedFormData = { ...formData };
     const keys = path.split(".");
+    const updatedFormData = { ...formData };
     let current = updatedFormData;
 
     keys.forEach((key) => {
       current = current[key];
     });
 
-    current[index][field] = e.target.value;
+    if (Array.isArray(current)) {
+      current[index][field] = e.target.value; // Update the specific field in the nested array
+    }
+
     setFormData(updatedFormData);
   };
 
+  // Fix for handleAddField
   const handleAddField = (path) => {
     const keys = path.split(".");
     const updatedFormData = { ...formData };
@@ -84,7 +89,11 @@ const Admin = () => {
 
     keys.forEach((key, idx) => {
       if (idx === keys.length - 1) {
-        current[key].push("");
+        if (Array.isArray(current[key])) {
+          current[key].push({}); // Add an empty object for nested arrays
+        } else {
+          current[key] = ""; // Add an empty string for non-array fields
+        }
       } else {
         current = current[key];
       }
@@ -93,6 +102,7 @@ const Admin = () => {
     setFormData(updatedFormData);
   };
 
+  // Fix for handleRemoveField
   const handleRemoveField = (path, index) => {
     const keys = path.split(".");
     const updatedFormData = { ...formData };
@@ -100,7 +110,9 @@ const Admin = () => {
 
     keys.forEach((key, idx) => {
       if (idx === keys.length - 1) {
-        current[key] = current[key].filter((_, i) => i !== index); // Remove the item
+        if (Array.isArray(current[key])) {
+          current[key].splice(index, 1); // Remove the item at the specified index
+        }
       } else {
         current = current[key];
       }
@@ -141,24 +153,18 @@ const Admin = () => {
         {/* Companies */}
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-neon-yellow">Companies</h2>
-          {formData.companies.map((company, index) => (
-            <div key={index} className="flex items-center space-x-2 mt-2">
-              <input
-                type="text"
-                value={company}
-                onChange={(e) => handleArrayChange(e, "companies", index)}
-                className="w-full p-2 bg-gray-700 text-white border border-neon-yellow rounded"
-                placeholder="Enter company details"
-              />
-              <button
-                type="button"
-                onClick={() => handleAddField("companies")}
-                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
-              >
-                Add
-              </button>
-            </div>
-          ))}
+          <input
+            type="text"
+            value={formData.companies.join(", ")}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                companies: e.target.value.split(",").map((item) => item.trim()),
+              })
+            }
+            className="w-full p-2 bg-gray-700 text-white border border-neon-yellow rounded"
+            placeholder="Enter companies (comma-separated)"
+          />
         </div>
 
         {/* Download Links */}
@@ -433,24 +439,18 @@ const Admin = () => {
         {/* Includes */}
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-neon-orange">Includes</h2>
-          {formData.includes.map((include, index) => (
-            <div key={index} className="flex items-center space-x-2 mt-2">
-              <input
-                type="text"
-                value={include}
-                onChange={(e) => handleArrayChange(e, "includes", index)}
-                className="w-full p-2 bg-gray-700 text-white border border-neon-orange rounded"
-                placeholder="Enter include details"
-              />
-              <button
-                type="button"
-                onClick={() => handleAddField("includes")}
-                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
-              >
-                Add
-              </button>
-            </div>
-          ))}
+          <input
+            type="text"
+            value={formData.includes.join(", ")}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                includes: e.target.value.split(",").map((item) => item.trim()),
+              })
+            }
+            className="w-full p-2 bg-gray-700 text-white border border-neon-orange rounded"
+            placeholder="Enter includes (comma-separated)"
+          />
         </div>
 
         {/* Language */}
@@ -506,24 +506,18 @@ const Admin = () => {
         {/* Tags */}
         <div className="bg-gray-800 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold text-neon-indigo">Tags</h2>
-          {formData.tags.map((tag, index) => (
-            <div key={index} className="flex items-center space-x-2 mt-2">
-              <input
-                type="text"
-                value={tag}
-                onChange={(e) => handleArrayChange(e, "tags", index)}
-                className="w-full p-2 bg-gray-700 text-white border border-neon-indigo rounded"
-                placeholder="Enter tag"
-              />
-              <button
-                type="button"
-                onClick={() => handleAddField("tags")}
-                className="bg-neon-red text-white px-4 py-2 rounded-lg shadow-md hover:bg-neon-red-dark transition duration-200"
-              >
-                Add
-              </button>
-            </div>
-          ))}
+          <input
+            type="text"
+            value={formData.tags.join(", ")}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                tags: e.target.value.split(",").map((item) => item.trim()),
+              })
+            }
+            className="w-full p-2 bg-gray-700 text-white border border-neon-indigo rounded"
+            placeholder="Enter tags (comma-separated)"
+          />
         </div>
 
         {/* Version */}
