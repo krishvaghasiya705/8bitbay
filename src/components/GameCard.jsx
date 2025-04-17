@@ -14,7 +14,7 @@ const GameCard = ({ game }) => {
           />
         </div>
         <div className="p-4">
-          <h2 className="text-pixelRed font-pixel text-lg">{game.name}</h2>
+          <h2 className="text-pixelRed font-pixel text-lg line-clamp-1">{game.name}</h2>
           <p className="text-sm text-gray-300 mt-1">
             Version: {game.version || "N/A"}
           </p>
