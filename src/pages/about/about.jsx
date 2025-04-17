@@ -1,6 +1,7 @@
 import React from "react";
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaCode, FaGamepad, FaPalette, FaRocket, FaLaptopCode, FaServer, FaDatabase, FaGlobe, FaChartLine } from "react-icons/fa";
-import { GiGamepad, GiSkills, GiBrain, GiPencilBrush, GiProcessor, GiPistolGun, GiSwordman, GiSwordWound, GiSwordArray, GiSwordClash } from "react-icons/gi";
+import { FaGithub, FaLinkedin, FaInstagram, FaCode, FaGamepad, FaPalette, FaRocket, FaLaptopCode, FaServer, FaDatabase, FaGlobe, FaChartLine } from "react-icons/fa";
+import { GiGamepad, GiSkills, GiBrain, GiPencilBrush, GiProcessor, GiPistolGun } from "react-icons/gi";
+import { BsTwitterX } from "react-icons/bs";
 
 const AboutPage = () => {
   return (
@@ -218,16 +219,16 @@ const AboutPage = () => {
           </div>
         </div>
         <div className="flex justify-center space-x-8 mb-12">
-          <a href="https://github.com/yourusername" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
+          <a href="https://github.com/krishvaghasiya705" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
             <FaGithub size={40} className="text-pixelRed hover:text-neon" />
           </a>
-          <a href="https://www.linkedin.com/in/yourusername" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
+          <a href="https://www.linkedin.com/in/krish-vaghasiya-272531358/" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
             <FaLinkedin size={40} className="text-pixelBlue hover:text-neon" />
           </a>
-          <a href="https://twitter.com/yourusername" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
-            <FaTwitter size={40} className="text-pixelYellow hover:text-neon" />
+          <a href="https://www.threads.net/@krish_vaghasiya1205?xmt=AQGz3TVXrBSXODQMiTBIB8cN_jMzW7SLc18n714f7_vZlXU" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
+            <BsTwitterX size={35} className="text-pixelYellow hover:text-neon" />
           </a>
-          <a href="https://www.instagram.com/yourusername" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
+          <a href="https://www.instagram.com/krish_vaghasiya1205/" target="_blank" rel="noopener noreferrer" className="transform hover:scale-125 transition-transform">
             <FaInstagram size={40} className="text-neon hover:text-pixelRed" />
           </a>
         </div>
