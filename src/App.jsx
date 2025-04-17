@@ -12,6 +12,7 @@ import Login from "./pages/login/login";
 import Signup from "./pages/signup/signup";
 import ProtectedRoute from "./utility/ProtectedRoute";
 import { Toaster, toast } from "react-hot-toast";
+import Loginremindingbutton from "./components/loginremindingbutton";
 
 const App = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,7 +47,9 @@ const App = () => {
   return (
     <>
       <Toaster />
-      {!noHeaderFooterRoutes.includes(location.pathname) && <Header onSearch={setSearchQuery} />}
+      {!noHeaderFooterRoutes.includes(location.pathname) && (
+        <Header onSearch={setSearchQuery} />
+      )}
       <main>
         <Routes>
           <Route path="/" element={<Home searchQuery={searchQuery} />} />
@@ -65,6 +68,9 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
         </Routes>
       </main>
+      {!noHeaderFooterRoutes.includes(location.pathname) && (
+        <Loginremindingbutton />
+      )}
       {!noHeaderFooterRoutes.includes(location.pathname) && <Footer />}
     </>
   );
