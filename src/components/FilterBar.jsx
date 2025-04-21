@@ -14,8 +14,8 @@ const FilterBar = () => {
   };
 
   return (
-    <div className="flex items-center justify-center space-x-4 font-pixel">
-      <div className="relative">
+    <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 font-pixel">
+      <div className="relative w-full sm:w-auto">
         <input
           type="text"
           value={query}
@@ -26,7 +26,7 @@ const FilterBar = () => {
             }
           }}
           placeholder="Type your quest..."
-          className="bg-black text-pixelYellow p-3 rounded-lg border-4 border-pixelBlue focus:outline-none focus:ring-4 focus:ring-pixelYellow placeholder-pixelYellow text-center text-lg shadow-pixel animate-pulse"
+          className="w-full sm:w-auto bg-black text-pixelYellow p-3 rounded-lg border-4 border-pixelBlue focus:outline-none focus:ring-4 focus:ring-pixelYellow placeholder-pixelYellow text-center text-lg shadow-pixel animate-pulse"
         />
         <div className="absolute inset-0 border-4 border-pixelRed rounded-lg animate-pulse pointer-events-none"></div>
       </div>

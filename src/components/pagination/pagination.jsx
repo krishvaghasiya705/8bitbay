@@ -16,33 +16,35 @@ export default function Pagination({ currentPage, totalPages, onPageChange }) {
   };
 
   return (
-    <div className="flex justify-center items-center gap-5 mt-6">
+    <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-5 mt-6">
       <div
-        className={`bg-darkBg border border-lime-500 w-10 h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
+        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
           currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() => handlePageChange(currentPage - 1)}
       >
-        <MdNavigateNext className="text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out rotate-180" />
+        <MdNavigateNext className="text-xl sm:text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out rotate-180" />
       </div>
       {Array.from({ length: totalPages }, (_, index) => (
         <div
           key={index}
           className={`${
-            currentPage === index + 1 ? "bg-white text-black" : "bg-darkBg text-white"
-          } border border-lime-500 w-10 h-10 cursor-pointer flex justify-center items-center group hover:bg-white hover:text-black transition duration-300 ease-in-out`}
+            currentPage === index + 1
+              ? "bg-white text-black"
+              : "bg-darkBg text-white"
+          } border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white hover:text-black transition duration-300 ease-in-out`}
           onClick={() => handlePageChange(index + 1)}
         >
-          <span className="text-2xl font-semibold">{index + 1}</span>
+          <span className="text-xl sm:text-2xl font-semibold">{index + 1}</span>
         </div>
       ))}
       <div
-        className={`bg-darkBg border border-lime-500 w-10 h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
+        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
           currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
         }`}
         onClick={() => handlePageChange(currentPage + 1)}
       >
-        <MdNavigateNext className="text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out" />
+        <MdNavigateNext className="text-xl sm:text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out" />
       </div>
     </div>
   );

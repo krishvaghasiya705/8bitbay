@@ -82,9 +82,9 @@ const Home = () => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
+    <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-4 md:p-6">
       <div
-        className="grid grid-cols-2 md:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6"
         ref={gameCardsRef}
       >
         {currentGames.map((game) => (
@@ -94,7 +94,9 @@ const Home = () => {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={(page) => navigate(`/?query=${encodeURIComponent(searchQuery)}&page=${page}`)}
+        onPageChange={(page) =>
+          navigate(`/?query=${encodeURIComponent(searchQuery)}&page=${page}`)
+        }
       />
     </div>
   );

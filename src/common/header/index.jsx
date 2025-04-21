@@ -17,16 +17,19 @@ const Header = ({ onSearch }) => {
   }, [auth.currentUser]);
 
   return (
-    <header className="bg-cardGrey p-4 flex justify-between items-center font-pixel text-neon shadow-lg border-b-2 border-pixelBlue sticky top-0 left-0 z-[999999]">
+    <header className="bg-cardGrey p-4 flex flex-col sm:flex-row justify-between items-center font-pixel text-neon shadow-lg border-b-2 border-pixelBlue sticky top-0 left-0 z-[999999]">
       <Link
         to="/"
-        className="w-[150px] hover:text-pixelYellow transition-all animate-pulse"
+        className="w-[100px] sm:w-[150px] hover:text-pixelYellow transition-all animate-pulse"
       >
         <Logo />
       </Link>
 
-      <FilterBar onSearch={onSearch} />
-      <div className="space-x-4 text-sm">
+      <div className="mt-4 sm:mt-0">
+        <FilterBar onSearch={onSearch} />
+      </div>
+
+      <div className="space-x-4 text-sm mt-4 sm:mt-0">
         <Link to="/" className="hover:text-pixelRed transition-all neon-hover">
           Home
         </Link>
