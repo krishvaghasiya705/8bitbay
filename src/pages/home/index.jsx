@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import GameCard from "../../components/GameCard";
 import { getAllGames } from "../../api/api";
 import { gsap } from "gsap";
@@ -9,22 +9,24 @@ import Pagination from "../../components/pagination/pagination";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Home = ({ searchQuery }) => {
+const Home = () => {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 12;
   const gameCardsRef = useRef(null);
-  const { page } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get("query") || "";
+  const currentPage = parseInt(searchParams.get("page"), 10) || 1;
 
   useEffect(() => {
     const loadGames = async () => {
       try {
         const data = await getAllGames();
         setGames(data);
-        setFilteredGames(data);
       } catch (err) {
       } finally {
         setLoading(false);
@@ -35,9 +37,14 @@ const Home = ({ searchQuery }) => {
 
   useEffect(() => {
     if (searchQuery) {
-      const filtered = games.filter((game) =>
-        game.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const filtered = games.filter((game) => {
+        const lowerCaseQuery = searchQuery.toLowerCase();
+        return (
+          game.name.toLowerCase().includes(lowerCaseQuery) ||
+          (game.tags && game.tags.some((tag) => tag.toLowerCase().includes(lowerCaseQuery))) ||
+          (game.companies && game.companies.some((company) => company.toLowerCase().includes(lowerCaseQuery)))
+        );
+      });
       setFilteredGames(filtered);
     } else {
       setFilteredGames(games);
@@ -66,23 +73,13 @@ const Home = ({ searchQuery }) => {
     }
   }, [filteredGames]);
 
-  useEffect(() => {
-    const pageNumber = parseInt(page, 10) || 1;
-    setCurrentPage(pageNumber);
-  }, [page]);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    navigate(`/${page}`);
-  };
+  const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+  const startIndex = (currentPage - 1) * gamesPerPage;
+  const currentGames = filteredGames.slice(startIndex, startIndex + gamesPerPage);
 
   if (loading) {
     return <Loader />;
   }
-
-  const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
-  const startIndex = (currentPage - 1) * gamesPerPage;
-  const currentGames = filteredGames.slice(startIndex, startIndex + gamesPerPage);
 
   return (
     <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
@@ -97,7 +94,7 @@ const Home = ({ searchQuery }) => {
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
-        onPageChange={handlePageChange}
+        onPageChange={(page) => navigate(`/?query=${encodeURIComponent(searchQuery)}&page=${page}`)}
       />
     </div>
   );

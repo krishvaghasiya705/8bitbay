@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const FilterBar = ({ onSearch }) => {
+const FilterBar = () => {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = () => {
-    onSearch(query);
-    navigate("/");
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("query", query);
+    searchParams.set("page", 1);
+    navigate(`/?${searchParams.toString()}`);
   };
 
   return (
@@ -17,6 +20,11 @@ const FilterBar = ({ onSearch }) => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
           placeholder="Type your quest..."
           className="bg-black text-pixelYellow p-3 rounded-lg border-4 border-pixelBlue focus:outline-none focus:ring-4 focus:ring-pixelYellow placeholder-pixelYellow text-center text-lg shadow-pixel animate-pulse"
         />

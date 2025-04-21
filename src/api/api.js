@@ -3,9 +3,9 @@ const GAMES_DATA_URL =
 
 export const getAllGames = async () => {
   const response = await fetch(GAMES_DATA_URL);
-  if (!response.ok) {
-    throw new Error("Failed to fetch games data.");
-  }
+  // if (!response.ok) {
+  //   throw new Error("Failed to fetch games data.");
+  // }
   const data = await response.json();
   return Array.isArray(data.record) ? data.record : [];
 };

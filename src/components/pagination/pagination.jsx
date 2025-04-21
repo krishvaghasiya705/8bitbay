@@ -1,14 +1,17 @@
 import React from "react";
 import { MdNavigateNext } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function Pagination({ currentPage, totalPages, onPageChange }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
+      const searchParams = new URLSearchParams(location.search);
+      searchParams.set("page", page);
+      navigate(`/?${searchParams.toString()}`);
       onPageChange(page);
-      navigate(`/${page}`);
     }
   };
 
