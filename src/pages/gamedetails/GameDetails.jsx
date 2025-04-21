@@ -20,7 +20,6 @@ const GameDetails = () => {
         const gameData = games.find((g) => g.id === id); // Find the specific game
         setGame(gameData);
       } catch (err) {
-        console.error("Failed to fetch game details:", err);
       }
     };
     loadGameDetails();

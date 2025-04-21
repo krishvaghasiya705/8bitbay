@@ -9,7 +9,6 @@ export const signup = async (email, password) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     return userCredential.user;
   } catch (error) {
-    console.error("Signup Error:", error.message);
     throw error;
   }
 };
@@ -22,7 +21,6 @@ export const login = async (email, password) => {
     const isAdmin = email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
     return { user, isAdmin };
   } catch (error) {
-    console.error("Login Error:", error.message);
     throw error;
   }
 };

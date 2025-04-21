@@ -26,7 +26,6 @@ const login = async (email, password) => {
     const isAdmin = email === ADMIN_EMAIL && password === ADMIN_PASSWORD;
     return { user, isAdmin };
   } catch (error) {
-    console.error("Login Error:", error.message);
     if (error.code === "auth/user-not-found") {
       throw new Error("No user found with this email.");
     } else if (error.code === "auth/wrong-password") {

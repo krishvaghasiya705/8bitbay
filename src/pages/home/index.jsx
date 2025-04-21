@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import GameCard from "../../components/GameCard";
 import { getAllGames } from "../../api/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Loader from "../../components/loader/loader";
+import Pagination from "../../components/pagination/pagination";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,17 +13,19 @@ const Home = ({ searchQuery }) => {
   const [games, setGames] = useState([]);
   const [filteredGames, setFilteredGames] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const gamesPerPage = 12;
   const gameCardsRef = useRef(null);
+  const { page } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadGames = async () => {
       try {
         const data = await getAllGames();
-        console.log("Games loaded:", data); // Verify the structure here
         setGames(data);
         setFilteredGames(data);
       } catch (err) {
-        console.error("Failed to load games:", err);
       } finally {
         setLoading(false);
       }
@@ -62,9 +66,23 @@ const Home = ({ searchQuery }) => {
     }
   }, [filteredGames]);
 
+  useEffect(() => {
+    const pageNumber = parseInt(page, 10) || 1;
+    setCurrentPage(pageNumber);
+  }, [page]);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    navigate(`/${page}`);
+  };
+
   if (loading) {
     return <Loader />;
   }
+
+  const totalPages = Math.ceil(filteredGames.length / gamesPerPage);
+  const startIndex = (currentPage - 1) * gamesPerPage;
+  const currentGames = filteredGames.slice(startIndex, startIndex + gamesPerPage);
 
   return (
     <div className="bg-gradient-to-br from-darkBg via-gray-900 to-black text-white min-h-screen p-6">
@@ -72,10 +90,15 @@ const Home = ({ searchQuery }) => {
         className="grid grid-cols-2 md:grid-cols-4 gap-6"
         ref={gameCardsRef}
       >
-        {filteredGames.map((game) => (
+        {currentGames.map((game) => (
           <GameCard key={game.id} game={game} />
         ))}
       </div>
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };
