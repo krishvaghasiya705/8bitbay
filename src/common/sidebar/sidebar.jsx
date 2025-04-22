@@ -15,7 +15,7 @@ const Sidebar = ({ isAdmin, isOpen, onClose }) => {
       )}
       <aside
         className={`bg-darkBg text-neon font-pixel w-64 h-screen p-4 shadow-pixel fixed top-0 left-0 z-[99999] border-r-2 border-pixelBlue transform transition-transform duration-300 ease-in-out ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-[110%]"
         }`}
       >
         <div className="flex justify-end">
