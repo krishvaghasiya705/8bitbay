@@ -83,7 +83,7 @@ const Admin = () => {
     original_size: "",
     repack_details: {
       features: [""],
-      title: "",
+      title: "Repack Features",
     },
     repack_size: "",
     tags: [""],
@@ -193,7 +193,6 @@ const Admin = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(previewJSON);
-    alert("JSON copied to clipboard!");
   };
 
   return (
