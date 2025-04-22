@@ -720,33 +720,21 @@ const Admin = () => {
                       <label className="block text-pixelPurple mb-1">
                         Features
                       </label>
-                      {formData.repack_details.features.map(
-                        (feature, index) => (
-                          <div key={index} className="mb-2">
-                            <input
-                              type="text"
-                              value={feature}
-                              onChange={(e) =>
-                                handleArrayChange(
-                                  e,
-                                  "repack_details.features",
-                                  index
-                                )
-                              }
-                              className="w-full p-2 bg-darkBg text-white border border-pixelPurple rounded"
-                              placeholder="Enter repack feature"
-                            />
-                          </div>
-                        )
-                      )}
-                      <button
-                        onClick={() =>
-                          handleAddField("repack_details.features")
+                      <textarea
+                        value={formData.repack_details.features.join("\n")}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            repack_details: {
+                              ...formData.repack_details,
+                              features: e.target.value.split("\n"),
+                            },
+                          })
                         }
-                        className="bg-pixelPurple text-white px-3 py-1 rounded flex items-center mt-2"
-                      >
-                        <FaPlus className="mr-1" /> Add Feature
-                      </button>
+                        className="w-full p-2 bg-darkBg text-white border border-pixelPurple rounded resize-none"
+                        rows="4"
+                        placeholder="Enter features (one per line)"
+                      />
                     </div>
                   </div>
                 </div>
