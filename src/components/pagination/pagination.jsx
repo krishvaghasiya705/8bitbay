@@ -1,51 +1,52 @@
 import React from "react";
 import { MdNavigateNext } from "react-icons/md";
-import { useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
-export default function Pagination({ currentPage, totalPages, onPageChange }) {
-  const navigate = useNavigate();
+export default function Pagination({ currentPage, totalPages }) {
   const location = useLocation();
 
-  const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set("page", page);
-      navigate(`/?${searchParams.toString()}`);
-      onPageChange(page);
-    }
+  const generatePageLink = (page) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", page);
+    return `/?${searchParams.toString()}`;
   };
 
   return (
     <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-5 mt-6">
-      <div
-        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
-          currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""
+      {/* Previous Page */}
+      <NavLink
+        to={generatePageLink(currentPage - 1)}
+        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
+          currentPage === 1 ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
         }`}
-        onClick={() => handlePageChange(currentPage - 1)}
       >
         <MdNavigateNext className="text-xl sm:text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out rotate-180" />
-      </div>
+      </NavLink>
+
+      {/* Page Numbers */}
       {Array.from({ length: totalPages }, (_, index) => (
-        <div
+        <NavLink
           key={index}
+          to={generatePageLink(index + 1)}
           className={`${
             currentPage === index + 1
               ? "bg-white text-black"
               : "bg-darkBg text-white"
-          } border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white hover:text-black transition duration-300 ease-in-out`}
-          onClick={() => handlePageChange(index + 1)}
+          } border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 flex justify-center items-center group hover:bg-white hover:text-black transition duration-300 ease-in-out`}
         >
           <span className="text-xl sm:text-2xl font-semibold">{index + 1}</span>
-        </div>
+        </NavLink>
       ))}
-      <div
-        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 cursor-pointer flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
-          currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""
+
+      {/* Next Page */}
+      <NavLink
+        to={generatePageLink(currentPage + 1)}
+        className={`bg-darkBg border border-lime-500 w-8 h-8 sm:w-10 sm:h-10 flex justify-center items-center group hover:bg-white transition duration-300 ease-in-out ${
+          currentPage === totalPages ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
         }`}
-        onClick={() => handlePageChange(currentPage + 1)}
       >
         <MdNavigateNext className="text-xl sm:text-2xl font-semibold text-white group-hover:text-black transition duration-300 ease-in-out" />
-      </div>
+      </NavLink>
     </div>
   );
 }
